@@ -1,0 +1,2 @@
+# MRcor
+Examines correlation estimates.
