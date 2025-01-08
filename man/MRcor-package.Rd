@@ -1,0 +1,10 @@
+\name{MRcor-package}
+\alias{MRcor-package}
+\alias{MRcor-pkg}
+\docType{package}
+\title{
+\packageTitle{MRcor}
+}
+\description{
+\packageDescription{MRcor}
+}
