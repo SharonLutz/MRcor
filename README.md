@@ -27,3 +27,7 @@ Note: MRCD must be installed first
 ```
 devtools::install_github("SharonLutz/MRdirection")
 ```
+
+```
+install.packages("pals")
+```
