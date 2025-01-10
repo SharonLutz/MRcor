@@ -1,1 +1,5 @@
 export("corrCompare", "MRcorDiff")
+importFrom("grDevices", "dev.off", "pdf")
+importFrom("graphics", "barplot", "boxplot", "legend", "par")
+importFrom("stats", "lm", "pnorm", "qnorm", "rbinom", "rnorm")
+importFrom("utils", "write.table")
