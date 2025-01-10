@@ -8,6 +8,10 @@ install.packages("devtools")
 Note: if you already have devtools installed, you don't need to install it again.
 
 ```
+install.packages("pals")
+```
+
+```
 devtools::install_github("xue-hr/MRCD")
 ```
 Note: If the above code gives you an error and you are using a Mac, please make sure you have a GNU Fortran compiler ([GNU Fortran compiler](https://mac.r-project.org/tools/)). Homebrew can be used to install GFortran on Mac.
@@ -26,8 +30,4 @@ Note: MRCD must be installed first
 
 ```
 devtools::install_github("SharonLutz/MRdirection")
-```
-
-```
-install.packages("pals")
 ```
