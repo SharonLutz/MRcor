@@ -3,7 +3,7 @@ function(n=100000, nSNPx = 10, MAFx = c(rep(0.5,  10)), nSNPy = 10, MAFy = c(rep
            nCov = 3, meanC = rep(0, 3), sdC = c(rep(1, 3)), deltaC =  c(rep(0.005,3)), betaC=c(rep(0.005,3)),
            betaGY = c(rep(0.2, 10)), betaGX = c(rep(0, 10)), deltaGX = c(rep(0.2, 10)), betaX=0.2,
            sdX=1,sdY=1, SEED=1, sig.level=0.05, nSims=5, table.name="MRcor", pFilterMRCD=5E-8, pFilterBDC=0.05/20,
-           approaches=c("All")){
+           approaches=c("All"), libPath=NULL, plot.pdf=F){
     
     if(length(MAFx)!=nSNPx){stop("length(MAFx) must equal nSNPx.")}
     if(length(MAFy)!=nSNPy){stop("length(MAFy) must equal nSNPy")}
@@ -16,12 +16,21 @@ function(n=100000, nSNPx = 10, MAFx = c(rep(0.5,  10)), nSNPy = 10, MAFy = c(rep
     if(length(deltaC)!=nCov){stop("ncol(deltaC) must equal nCov")}
     if(length(betaC)!=nCov){stop("length(betaC) must equal nCov")}
     
-    # load libraries
-    library(MRcML)
-    library(MRCD)
-    library(BiDirectCausal)
-    library(TwoSampleMR)
-    library(pals)
+    
+    if(is.null(libPath)){
+      library(MRCD)
+      library(MRcML)
+      library(BiDirectCausal)
+      library(TwoSampleMR)
+      library(pals)
+    }
+    if(!is.null(libPath)){
+      library(MRCD, lib.loc=libPath)
+      library(MRcML, lib.loc=libPath)
+      library(BiDirectCausal, lib.loc=libPath)
+      library(TwoSampleMR, lib.loc=libPath)
+      library(pals, lib.loc=libPath)
+    }
     
     
     ################################################################################
@@ -1959,18 +1968,6 @@ function(n=100000, nSNPx = 10, MAFx = c(rep(0.5,  10)), nSNPy = 10, MAFy = c(rep
         a.Egger <- NA
         r.Egger <- NA
         
-        # simple linear regression (SLR)
-        modelXS<-summary(lm(x~matGX[,1]))$coef[2,c(1,2)]
-        modelYS<-summary(lm(y~matGX[,1]))$coef[2,c(1,2)]
-        
-        modelxr<-summary(lm(xr~matGX[,1]))$coef[2,c(1,2)]
-        modelyr<-summary(lm(yr~matGX[,1]))$coef[2,c(1,2)]
-        
-        #multiple linear regression (MLR)
-        modelXM<-summary(lm(x~matGX[,1]+matC))$coef[2,c(1,2)]
-        modelYM<-summary(lm(y~matGX[,1]+matC))$coef[2,c(1,2)]
-        
-        
         #Sample sizes for p_exp, p_out
         n_exp<-n
         n_out<-n
@@ -2196,21 +2193,23 @@ function(n=100000, nSNPx = 10, MAFx = c(rep(0.5,  10)), nSNPy = 10, MAFy = c(rep
       write.table(corGXms, file=paste0(table.name,"_seed",SEED,"_corGXms.txt"), quote=F, row.names=F, col.names = F)
       write.table(corGYms, file=paste0(table.name,"_seed",SEED,"_corGYms.txt"), quote=F, row.names=F, col.names = F)
       
-      # create plot and save to working directory
-      cols <- polychrome(n = 29)
-      cols <- cols[c(1:4,7,5:6,8:19,21:27,20,28:29)]
       
-      rownames1 <- rownames(matR)
-      
-      pdf(paste(table.name,"_seed",SEED,"_matR.pdf", sep = ""))
-      par(mar=c(7, 3, 3, 7)+0.2, xpd=TRUE)
-      barplot(as.matrix(matR),
-              col = cols, 
-              las=2)
-      legend("right", inset = c(-0.27,0), legend = rownames1, 
-             fill = cols, box.lty = 0, cex = 0.7,xpd = T)
-      dev.off() 
-      
+      if(plot.pdf){
+          # create plot and save to working directory
+          cols <- polychrome(n = 29)
+          cols <- cols[c(1:4,7,5:6,8:19,21:27,20,28:29)]
+          
+          rownames1 <- rownames(matR)
+          
+          pdf(paste(table.name,"_seed",SEED,"_matR.pdf", sep = ""))
+          par(mar=c(7, 3, 3, 7)+0.2, xpd=TRUE)
+          barplot(as.matrix(matR),
+                  col = cols,
+                  las=2)
+          legend("right", inset = c(-0.27,0), legend = rownames1,
+                 fill = cols, box.lty = 0, cex = 0.7,xpd = T)
+          dev.off()
+      }
     
     
     return(list("matR" = matR, "corGXmr" = corGXmr, "corGYmr"=corGYmr, "corGXsr"=corGXsr,"corGYsr"=corGYsr, "corGXms"=corGXms, "corGYms"=corGYms))
