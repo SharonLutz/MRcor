@@ -29,5 +29,5 @@ devtools::install_github("xue-hr/BiDirectCausal")
 Note: MRCD must be installed first
 
 ```
-devtools::install_github("SharonLutz/MRdirection")
+devtools::install_github("SharonLutz/MRcor")
 ```
